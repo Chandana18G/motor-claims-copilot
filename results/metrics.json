@@ -1,0 +1,171 @@
+{
+  "1_extraction": {
+    "field_accuracy": 1.0,
+    "fields_checked": 9881,
+    "missing_document_detection": 1.0
+  },
+  "2_abstention": {
+    "conflicts": 119,
+    "abstention_recall": 1.0,
+    "abstention_precision": 1.0,
+    "abstentions": 119
+  },
+  "3_retrieval": {
+    "bm25": {
+      "recall@1": 0.6098,
+      "recall@3": 0.7927,
+      "queries": 82
+    },
+    "dense": {
+      "recall@1": 0.6098,
+      "recall@3": 0.7439,
+      "queries": 82
+    },
+    "hybrid": {
+      "recall@1": 0.6098,
+      "recall@3": 0.7561,
+      "queries": 82
+    },
+    "out_of_scope_results": 0
+  },
+  "4_rules": {
+    "exclusion_and_payout_agreement": 1.0,
+    "claims": 1881,
+    "escalated_share": 0.102
+  },
+  "5_fraud_fairness": {
+    "variants": {
+      "Trained on historical labels": {
+        "A": {
+          "fpr": 0.027,
+          "tpr": 0.2278,
+          "flag_rate": 0.035,
+          "n": 6489
+        },
+        "B": {
+          "fpr": 0.1974,
+          "tpr": 0.5379,
+          "flag_rate": 0.2102,
+          "n": 3511
+        },
+        "overall": {
+          "fpr": 0.0869,
+          "tpr": 0.3325,
+          "flag_rate": 0.0965,
+          "n": 10000
+        },
+        "auc_true_labels": 0.7507
+      },
+      "Area and postcode proxy removed": {
+        "A": {
+          "fpr": 0.086,
+          "tpr": 0.4131,
+          "flag_rate": 0.0991,
+          "n": 6489
+        },
+        "B": {
+          "fpr": 0.0864,
+          "tpr": 0.3409,
+          "flag_rate": 0.096,
+          "n": 3511
+        },
+        "overall": {
+          "fpr": 0.0862,
+          "tpr": 0.3887,
+          "flag_rate": 0.098,
+          "n": 10000
+        },
+        "auc_true_labels": 0.7788
+      },
+      "Thresholds equalised on audited sample": {
+        "A": {
+          "fpr": 0.0822,
+          "tpr": 0.4054,
+          "flag_rate": 0.0951,
+          "n": 6489
+        },
+        "B": {
+          "fpr": 0.0796,
+          "tpr": 0.3182,
+          "flag_rate": 0.0886,
+          "n": 3511
+        },
+        "overall": {
+          "fpr": 0.0813,
+          "tpr": 0.376,
+          "flag_rate": 0.0928,
+          "n": 10000
+        },
+        "auc_true_labels": 0.7507
+      }
+    },
+    "feedback_sweep": [
+      {
+        "scrutiny_gap": 0.0,
+        "with_proxies": 0.995,
+        "without_proxies": 0.952
+      },
+      {
+        "scrutiny_gap": 0.1,
+        "with_proxies": 1.818,
+        "without_proxies": 0.948
+      },
+      {
+        "scrutiny_gap": 0.2,
+        "with_proxies": 2.804,
+        "without_proxies": 0.97
+      },
+      {
+        "scrutiny_gap": 0.3,
+        "with_proxies": 4.193,
+        "without_proxies": 0.976
+      },
+      {
+        "scrutiny_gap": 0.4,
+        "with_proxies": 5.735,
+        "without_proxies": 0.974
+      },
+      {
+        "scrutiny_gap": 0.5,
+        "with_proxies": 7.691,
+        "without_proxies": 0.969
+      },
+      {
+        "scrutiny_gap": 0.6,
+        "with_proxies": 9.563,
+        "without_proxies": 0.952
+      }
+    ],
+    "sweep_seeds": 5,
+    "test_claims": 10000,
+    "true_fraud_rate": 0.0391
+  },
+  "6_citations": {
+    "drafts": 2000,
+    "valid_drafts_with_problems": 0,
+    "corrupted_citations_detected": 1.0
+  },
+  "7_prompt_injection": {
+    "known_pattern_detection": 1.0,
+    "injected_claims": 54,
+    "false_alarm_rate": 0.0,
+    "held_out_detection": 0.3333,
+    "recommendation_unchanged_under_attack": 1.0
+  },
+  "8_audit_integrity": {
+    "edit": 1.0,
+    "delete": 1.0,
+    "reorder": 1.0,
+    "insert": 1.0
+  },
+  "pipeline": {
+    "claims": 2000,
+    "recommendations": {
+      "approve": 1596,
+      "deny": 75,
+      "request_information": 329
+    },
+    "escalated_to_supervisor": 252,
+    "audit_chain_intact": true
+  }
+}
