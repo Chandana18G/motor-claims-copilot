@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from copilot.access import Sensitivity
 from copilot.extraction import Extracted
 from copilot.policies import POLICIES
 
@@ -20,6 +21,7 @@ MEDICAL_LIMIT = 5_000.0
 class Basis:
     clause_id: str
     finding: str
+    label: Sensitivity = Sensitivity.INTERNAL
 
 
 @dataclass
@@ -44,7 +46,7 @@ def evaluate(ex: Extracted, days_to_report: int | None, fraud_flag: bool) -> Rul
         out.bases.append(Basis(f"{pid}-4.1", "The claim form states the driver was not licensed"))
     if ex.alcohol_positive:
         out.recommendation = "deny"
-        out.bases.append(Basis(f"{pid}-4.2", "The police report records a positive alcohol test"))
+        out.bases.append(Basis(f"{pid}-4.2", "The police report records a positive alcohol test", Sensitivity.CONFIDENTIAL))
     if ex.commercial_use:
         out.recommendation = "deny"
         out.bases.append(Basis(f"{pid}-4.3", "The claim form states the vehicle was used for business"))
@@ -58,7 +60,8 @@ def evaluate(ex: Extracted, days_to_report: int | None, fraud_flag: bool) -> Rul
             out.bases.append(Basis(f"{pid}-2.2", f"Settlement is capped at the market value of {limit:.2f} EUR"))
         if ex.medical_amount:
             out.payable_medical = round(min(ex.medical_amount, MEDICAL_LIMIT), 2)
-            out.bases.append(Basis(f"{pid}-6.1", f"Medical costs of {ex.medical_amount:.2f} EUR are covered up to {MEDICAL_LIMIT:.0f} EUR"))
+            out.bases.append(Basis(f"{pid}-6.1", f"Medical costs of {ex.medical_amount:.2f} EUR are covered up to {MEDICAL_LIMIT:.0f} EUR",
+                                    Sensitivity.SPECIAL_CATEGORY))
         if days_to_report is not None and days_to_report > LATE_NOTIFICATION_DAYS:
             out.recommendation = "request_information"
             out.bases.append(Basis(f"{pid}-5.1", f"The incident was reported after {days_to_report} days"))
@@ -70,5 +73,5 @@ def evaluate(ex: Extracted, days_to_report: int | None, fraud_flag: bool) -> Rul
     if fraud_flag:
         out.escalate = True
         out.escalation_reasons.append("fraud indicator")
-        out.bases.append(Basis("GL-2", "The claim was flagged by the fraud indicator"))
+        out.bases.append(Basis("GL-2", "The claim was flagged by the fraud indicator", Sensitivity.CONFIDENTIAL))
     return out

@@ -9,7 +9,7 @@ import numpy as np
 from matplotlib.patches import FancyBboxPatch
 
 from evaluation import style
-from evaluation.style import AMBER, BG, GRID, MAGENTA, MINT, MUTED, TEXT, VIOLET
+from evaluation.style import AMBER, BG, MAGENTA, MINT, MUTED, TEXT, VIOLET
 
 SIZE = (12, 6.75)
 DPI = 160
@@ -22,45 +22,84 @@ def _save(fig, out: Path, name: str) -> None:
 
 
 def fairness(results: dict, out: Path) -> None:
-    v = results["5_fraud_fairness"]["variants"]
+    v = results["5_fairness"]["variants"]
     names = list(v)
     fig, ax = plt.subplots(figsize=SIZE)
     x = np.arange(len(names))
     w = 0.34
     for off, g, color, label in ((-w / 2, "A", MINT, "Area A"), (w / 2, "B", MAGENTA, "Area B")):
-        vals = [v[n][g]["fpr"] * 100 for n in names]
+        vals = np.array([v[n]["area"]["rates"][g]["fpr"] * 100 for n in names])
+        lo = np.array([v[n]["area"]["rates"][g]["ci"][0] * 100 for n in names])
+        hi = np.array([v[n]["area"]["rates"][g]["ci"][1] * 100 for n in names])
         bars = ax.bar(x + off, vals, w, color=color, label=label)
-        for b, val in zip(bars, vals):
-            ax.text(b.get_x() + b.get_width() / 2, val + 0.2, f"{val:.1f}%", ha="center", color=TEXT, fontsize=12)
-    ax.set_xticks(x, [n.replace(" on ", "\non ").replace(" proxy", "\nproxy") for n in names])
+        ax.errorbar(x + off, vals, yerr=[vals - lo, hi - vals], fmt="none", ecolor=TEXT, elinewidth=1.4, capsize=5)
+        for b, val, h in zip(bars, vals, hi):
+            ax.text(b.get_x() + b.get_width() / 2, h + 0.4, f"{val:.1f}%", ha="center", color=TEXT, fontsize=12)
+    for i, n in enumerate(names):
+        d = v[n]["area"]["disparities"][0]
+        colour = MAGENTA if d["flagged"] else MINT
+        ax.text(i, 25.2, f"B÷A {d['ratio']:.2f}\n({d['ci'][0]:.2f}–{d['ci'][1]:.2f})", ha="center",
+                va="bottom", color=colour, fontsize=11.5, weight="bold")
+    ax.set_xticks(x, [n.replace(", ", ",\n").replace(" on ", "\non ").replace(" removed", "\nremoved") for n in names])
+    ax.set_ylim(0, 28)
     ax.set_ylabel("False-positive rate (honest claims flagged)")
     ax.set_title("Who gets wrongly flagged by the fraud indicator?", pad=34)
-    style.subtitle(ax, "Synthetic test set; true fraud is independent of area, but past investigations focused on area B")
-    ax.legend(loc="upper right")
+    style.subtitle(ax, "Synthetic test set (12,000 claims) · 95% bootstrap intervals · ratio flagged outside 0.8–1.25")
+    ax.legend(loc="upper right", bbox_to_anchor=(1, 0.86))
     fig.tight_layout()
     _save(fig, out, "fairness_fpr")
 
 
 def feedback(results: dict, out: Path) -> None:
-    sweep = results["5_fraud_fairness"]["feedback_sweep"]
+    sweep = results["5_fairness"]["feedback_sweep"]
     gaps = [r["scrutiny_gap"] * 100 for r in sweep]
     fig, ax = plt.subplots(figsize=SIZE)
-    ax.plot(gaps, [r["with_proxies"] for r in sweep], color=MAGENTA, lw=3, marker="o", ms=8, label="Model sees area / postcode")
-    ax.plot(gaps, [r["without_proxies"] for r in sweep], color=MINT, lw=3, marker="o", ms=8, label="Proxies removed")
+    for key, colour, label in (("all_features", MAGENTA, "All features, incl. area and postcode"),
+                               ("area_removed", AMBER, "Area and postcode removed (vehicle proxies remain)"),
+                               ("behaviour_only", MINT, "Behaviour features only")):
+        ax.plot(gaps, [r[key] for r in sweep], color=colour, lw=3, marker="o", ms=8, label=label)
     ax.axhline(1, color=MUTED, ls="--", lw=1)
     ax.text(gaps[-1], 1.04, "parity", color=MUTED, ha="right", va="bottom", fontsize=11)
     ax.set_xlabel("Extra investigation rate in area B in the historical data (percentage points)")
     ax.set_ylabel("False-positive rate, area B ÷ area A")
     ax.set_title("Uneven past scrutiny becomes tomorrow's training label", pad=34)
-    style.subtitle(ax, "Same true fraud rate in both areas; only who was investigated differs")
+    style.subtitle(ax, "Same true fraud rate in both areas · mean of 3 seeds per point")
     ax.legend(loc="upper left")
     fig.tight_layout()
     _save(fig, out, "feedback_loop")
 
 
+def extraction(results: dict, out: Path) -> None:
+    r = results["1_extraction"]
+    order = [k for k in ("standard", "standard+ocr", "german", "german+ocr", "narrative") if k in r]
+    labels = {"standard": "English form", "standard+ocr": "English form + OCR noise", "german": "German form",
+              "german+ocr": "German form + OCR noise", "narrative": "Free-text letter (held out)"}
+    fig, ax = plt.subplots(figsize=SIZE)
+    y = np.arange(len(order))[::-1]
+    left = np.zeros(len(order))
+    for key, colour, name in (("correct", MINT, "Correct"), ("missing", VIOLET, "Missing → copilot abstains"),
+                              ("wrong", MAGENTA, "Wrong value")):
+        vals = np.array([r[k][key] * 100 for k in order])
+        ax.barh(y, vals, left=left, color=colour, label=name, height=0.6)
+        for yi, l, v in zip(y, left, vals):
+            if v >= 4:
+                ax.text(l + v / 2, yi, f"{v:.0f}%", ha="center", va="center", color=BG, fontsize=11, weight="bold")
+        left += vals
+    ax.set_yticks(y, [labels[k] for k in order])
+    ax.set_xlim(0, 100)
+    ax.set_xlabel("Share of checked fields")
+    ax.set_title("Reading claim documents", pad=34)
+    caught = r.get("standard+ocr", {}).get("corruption_caught", float("nan"))
+    style.subtitle(ax, f"Dropped digits from OCR noise caught by cross-document checks in {caught:.0%} of claims (English forms)")
+    ax.legend(loc="lower right", ncols=3, bbox_to_anchor=(1, -0.2))
+    fig.tight_layout()
+    _save(fig, out, "extraction")
+
+
 def retrieval(results: dict, out: Path) -> None:
     r = results["3_retrieval"]
-    modes = [("bm25", "BM25 (keywords)"), ("dense", "Dense (LSA vectors)"), ("hybrid", "Hybrid (RRF)")]
+    modes = [("bm25", "BM25\n(keywords)"), ("dense_lsa", "Dense LSA\n(trained here)"), ("hybrid_lsa", "Hybrid\nBM25 + LSA"),
+             ("dense_glove", "Dense GloVe\n(pretrained)"), ("hybrid_glove", "Hybrid\nBM25 + GloVe")]
     fig, ax = plt.subplots(figsize=SIZE)
     x = np.arange(len(modes))
     w = 0.34
@@ -70,48 +109,53 @@ def retrieval(results: dict, out: Path) -> None:
         for b, val in zip(bars, vals):
             ax.text(b.get_x() + b.get_width() / 2, val + 1, f"{val:.0f}%", ha="center", color=TEXT, fontsize=12)
     ax.set_xticks(x, [label for _, label in modes])
-    ax.set_ylim(0, 110)
+    ax.set_ylim(0, 100)
     ax.set_ylabel("Questions where the right clause is retrieved")
     ax.set_title("Finding the right policy clause", pad=34)
-    style.subtitle(ax, f"{r['hybrid']['queries']} plain-language adjuster questions across 3 synthetic policies · "
-                       f"out-of-scope clauses returned: {r['out_of_scope_results']}")
+    style.subtitle(ax, f"{r['questions']} author-written adjuster questions × 3 policies ({r['hybrid_glove']['queries']} checks) · "
+                       f"clauses returned from another policy: {r['out_of_scope_results']}")
     ax.legend(loc="upper left")
     fig.tight_layout()
     _save(fig, out, "retrieval")
 
 
-def automation_bias(out: Path) -> None:
-    """Analytic model of review: diligence d, AI error rate e.
-
-    A diligent review catches an AI error with p=0.9 and wrongly overrides a correct draft with
-    p=0.02; a non-diligent review accepts the draft as is.
-    """
-    catch, false_override = 0.9, 0.02
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=SIZE, gridspec_kw={"wspace": 0.28})
-    for d, color in ((0.95, MINT), (0.6, VIOLET), (0.3, AMBER), (0.1, MAGENTA)):
-        e = np.linspace(0.005, 0.15, 60)
-        override = d * (e * catch + (1 - e) * false_override)
-        passed = e * (1 - d * catch)
-        a1.plot(override * 100, passed * 100, color=color, lw=3, label=f"{d:.0%} of drafts really reviewed")
-    a1.axvline(3, color=MUTED, ls="--", lw=1)
-    a1.text(3.15, -0.45, "same 3% override rate", color=MUTED, fontsize=11)
-    a1.set_xlabel("Override rate seen in the audit log (%)")
-    a1.set_ylabel("Wrong AI drafts that become decisions (%)")
-    a1.set_title("A low override rate proves nothing", pad=34)
-    style.subtitle(a1, "Model: diligent review catches 90% of AI errors")
-    a1.legend(loc="upper right", fontsize=10)
-
-    n = np.arange(0, 201)
-    for p, color in ((0.10, MAGENTA), (0.05, AMBER), (0.02, VIOLET), (0.01, MINT)):
-        a2.plot(n, (1 - (1 - p) ** n) * 100, color=color, lw=3, label=f"{p:.0%} of accepted drafts wrong")
-    a2.axhline(95, color=MUTED, ls="--", lw=1)
-    a2.set_xlabel("Accepted drafts re-reviewed (unannounced sample)")
-    a2.set_ylabel("Chance the sample contains an error (%)")
-    a2.set_title("Audit what was accepted", pad=34)
-    style.subtitle(a2, "Probability of finding at least one bad acceptance")
-    a2.legend(loc="lower right", fontsize=10)
-    fig.subplots_adjust(left=0.07, right=0.98, top=0.86, bottom=0.11, wspace=0.28)
+def automation_bias(sim: dict, summary: dict, out: Path) -> None:
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=SIZE)
+    a1.scatter(sim["override_rate"] * 100, sim["pass_through"] * 100, s=7, color=MAGENTA, alpha=0.35, lw=0)
+    a1.set_xlabel("Override rate in the audit log (%)")
+    a1.set_ylabel("Wrong AI drafts that became decisions (%)")
+    a1.set_title("Override rate: no signal", pad=34)
+    style.subtitle(a1, f"Spearman ρ = {summary['spearman_override_vs_harm']:+.2f} over {summary['runs']:,} simulated worlds")
+    a2.scatter(sim["catch"] * 100, sim["canary_est"] * 100, s=7, color=MINT, alpha=0.35, lw=0)
+    a2.plot([0, 100], [0, 100], color=MUTED, ls="--", lw=1)
+    a2.set_xlabel("True chance an AI error is caught (%)")
+    a2.set_ylabel("Estimate from 60 hidden canaries (%)")
+    a2.set_title("Hidden canaries: strong signal", pad=34)
+    style.subtitle(a2, f"Spearman ρ = {summary['spearman_canary_vs_catch']:+.2f} · mean error {summary['canary_mean_abs_error'] * 100:.1f} pts")
+    fig.subplots_adjust(left=0.07, right=0.98, top=0.86, bottom=0.11, wspace=0.25)
     _save(fig, out, "automation_bias")
+
+
+def injection(results: dict, out: Path) -> None:
+    r = results["7_prompt_injection"]
+    e2e = r.get("garak_end_to_end")
+    if not isinstance(e2e, dict):
+        return
+    steps = [("garak attacks\ninserted into claims", e2e["attacks"], VIOLET),
+             ("Missed by the\npattern guard", e2e["missed_by_guard_and_reached_model"], AMBER),
+             ("Obeyed by the model,\nrejected by output checks", e2e["obeyed_then_rejected_by_output_checks"], MINT),
+             ("Changed what the\nadjuster sees", e2e["attacks_that_changed_what_the_adjuster_sees"], MAGENTA)]
+    fig, ax = plt.subplots(figsize=SIZE)
+    x = np.arange(len(steps))
+    bars = ax.bar(x, [s[1] for s in steps], color=[s[2] for s in steps], width=0.6)
+    for b, (_, v, _) in zip(bars, steps):
+        ax.text(b.get_x() + b.get_width() / 2, v + 1, str(v), ha="center", color=TEXT, fontsize=14, weight="bold")
+    ax.set_xticks(x, [s[0] for s in steps])
+    ax.set_ylabel("Attacks")
+    ax.set_title("Defence in depth against prompt injection", pad=34)
+    style.subtitle(ax, "External attacks from NVIDIA garak · worst-case model that obeys every injection it sees")
+    fig.tight_layout()
+    _save(fig, out, "injection")
 
 
 def risk_matrix(out: Path) -> None:
@@ -162,16 +206,16 @@ def architecture(out: Path) -> None:
         ax.annotate("", (x2, y2), (x1, y1), arrowprops=dict(arrowstyle="-|>", color=color, lw=1.8, ls=ls))
 
     ax.text(0.2, 8.6, "One claim's journey", color=TEXT, fontsize=16, weight="bold")
-    ax.text(0.2, 8.15, "AI components prepare; only people decide", color=MUTED, fontsize=11.5)
+    ax.text(0.2, 8.15, "AI components prepare; only signed-in people decide", color=MUTED, fontsize=11.5)
 
-    box(0.2, 5.0, 2.9, 2.6, "Intake + guard", "claim form, repair\nestimate, police and\nmedical documents\ninjection lines\nquarantined", VIOLET)
-    box(3.6, 5.0, 2.9, 2.6, "Extraction", "typed fields,\nvalidated\nmissing documents\nand conflicts\nflagged", VIOLET)
-    box(7.0, 6.35, 3.6, 1.6, "Hybrid retrieval", "BM25 + dense, RRF\nclaimant's policy only", VIOLET)
+    box(0.2, 5.0, 2.9, 2.6, "Intake + guard", "claim, estimate,\npolice, medical\ndocuments; injection\nlines quarantined", VIOLET)
+    box(3.6, 5.0, 2.9, 2.6, "Extraction", "typed, validated;\nmissing or\nconflicting facts\n→ abstain", VIOLET)
+    box(7.0, 6.35, 3.6, 1.6, "Hybrid retrieval", "BM25 + GloVe, RRF\nclaimant's policy only", VIOLET)
     box(7.0, 4.45, 3.6, 1.6, "Rule engine", "exclusions, excess, limits,\nescalation: exact, in code", VIOLET)
-    box(7.0, 2.55, 3.6, 1.6, "Fraud indicator", "separate statistical model\nstructured features only", AMBER)
-    box(11.1, 4.45, 4.6, 3.5, "Cited draft", "summary + recommendation\nevery sentence cites a clause\ncitations checked verbatim\nabstains on conflicting\nevidence", VIOLET)
-    box(11.1, 1.0, 4.6, 2.9, "Adjuster decides", "accept / edit / override\noverride needs a reason\nhigh-value or flagged\n→ supervisor sign-off", MINT)
-    box(3.6, 0.6, 6.9, 1.65, "Hash-chained audit log", "every step, actor and decision\nediting any entry breaks the chain", MUTED)
+    box(7.0, 2.55, 3.6, 1.6, "Fraud indicator", "separate model, audited\nper subgroup with CIs", AMBER)
+    box(11.1, 4.45, 4.6, 3.5, "Cited draft", "LLM or template; explains\nthe rule outcome only\noutput checks: citations,\ncausal clauses, amounts,\nleaks, changed outcome", VIOLET)
+    box(11.1, 1.0, 4.6, 2.9, "Adjuster decides", "signed staff token\noverride needs a reason\nescalated → a different\nsupervisor signs off", MINT)
+    box(3.6, 0.6, 6.9, 1.65, "Keyed audit log + monitoring", "HMAC chain, external anchors · hidden canaries,\nfairness checks, kill switch per component", MUTED)
 
     arrow(3.1, 6.3, 3.6, 6.3)
     arrow(6.5, 6.6, 7.0, 7.1)
@@ -182,15 +226,17 @@ def architecture(out: Path) -> None:
     arrow(10.6, 3.4, 11.1, 3.0, AMBER)
     arrow(13.4, 4.45, 13.4, 3.9, MINT)
     arrow(11.1, 1.6, 10.5, 1.6, MUTED, "--")
-    ax.text(13.4, 0.45, "claimant is told only the human decision", color=MINT, fontsize=11, ha="center")
+    ax.text(13.4, 0.35, "claimant is told only a sealed human decision", color=MINT, fontsize=11, ha="center")
     _save(fig, out, "architecture")
 
 
-def render_all(results: dict, out: Path) -> None:
+def render_all(results: dict, sim: dict, out: Path) -> None:
     style.apply()
     fairness(results, out)
     feedback(results, out)
+    extraction(results, out)
     retrieval(results, out)
-    automation_bias(out)
+    automation_bias(sim, results["11_monitoring_simulation"], out)
+    injection(results, out)
     risk_matrix(out)
     architecture(out)
