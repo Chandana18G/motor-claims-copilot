@@ -1,5 +1,7 @@
 # Presenter Script
 ### Responsible Design and Governance of a Generative AI Claims Copilot for Motor Insurance
+**Presenter:** [Chandana Gurusiddappa](https://chandana18g.github.io) · [LinkedIn](https://www.linkedin.com/in/chandana-gurusiddappa-785563223/)
+
 Final speaking script — matches the approved 12-slide deck exactly. Total target: ~11:15–11:45 (within the 10–12 min goal, comfortably under the 15-minute ceiling).
 
 ---

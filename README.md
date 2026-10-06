@@ -1,5 +1,7 @@
 # Claims Copilot: Responsible Generative AI for Motor Insurance
 
+**Author:** [Chandana Gurusiddappa](https://chandana18g.github.io) · [LinkedIn](https://www.linkedin.com/in/chandana-gurusiddappa-785563223/) · [GitHub](https://github.com/Chandana18G)
+
 A Responsible AI assessment of a generative-AI copilot for motor insurance claims handling:
 **should it be trusted with a real claim, and under what conditions?** The assessment works
 through stakeholders, five ethical lenses, the EU AI Act and the GDPR, a risk analysis and a
@@ -261,3 +263,11 @@ docs/       governance and RACI, DPIA outline, model card, presentation script
 figures/    charts used above
 results/    metrics.json from the last run
 ```
+
+## Author
+
+**Chandana Gurusiddappa** · M.Sc. Applied Data Science & Artificial Intelligence, SRH University · Regensburg, Germany
+
+- Portfolio: [chandana18g.github.io](https://chandana18g.github.io) · [this project on the portfolio](https://chandana18g.github.io/projects/claims-copilot/)
+- LinkedIn: [chandana-gurusiddappa](https://www.linkedin.com/in/chandana-gurusiddappa-785563223/)
+- GitHub: [@Chandana18G](https://github.com/Chandana18G)
