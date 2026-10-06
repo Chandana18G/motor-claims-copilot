@@ -1,125 +1,38 @@
 {
-  "1_extraction": {
-    "standard": {
-      "claims": 1003,
-      "correct": 1.0,
-      "wrong": 0.0,
-      "missing": 0.0,
-      "abstained": 0.0608,
-      "corrupted_claims": 0,
-      "corruption_caught": NaN
-    },
-    "standard+ocr": {
-      "claims": 197,
-      "correct": 0.9478,
-      "wrong": 0.0522,
-      "missing": 0.0,
-      "abstained": 0.2843,
-      "corrupted_claims": 86,
-      "corruption_caught": 0.5698
-    },
-    "german": {
-      "claims": 515,
-      "correct": 1.0,
-      "wrong": 0.0,
-      "missing": 0.0,
-      "abstained": 0.0602,
-      "corrupted_claims": 0,
-      "corruption_caught": NaN
-    },
-    "german+ocr": {
-      "claims": 85,
-      "correct": 0.9475,
-      "wrong": 0.0525,
-      "missing": 0.0,
-      "abstained": 0.4118,
-      "corrupted_claims": 33,
-      "corruption_caught": 0.9091
-    },
-    "narrative": {
-      "claims": 200,
-      "correct": 0.0,
-      "wrong": 0.0,
-      "missing": 1.0,
-      "abstained": 1.0,
-      "corrupted_claims": 0,
-      "corruption_caught": NaN
-    }
-  },
-  "2_abstention": {
-    "planted_conflicts": 116,
-    "conflict_recall": 1.0,
-    "abstention_on_clean_claims": 0.0,
-    "drafts_with_undetected_corrupted_value": 0.0247
-  },
-  "3_retrieval": {
-    "bm25": {
-      "recall@1": 0.3642,
-      "recall@3": 0.5376,
-      "queries": 173
-    },
-    "dense_lsa": {
-      "recall@1": 0.3642,
-      "recall@3": 0.5202,
-      "queries": 173
-    },
-    "hybrid_lsa": {
-      "recall@1": 0.3642,
-      "recall@3": 0.5202,
-      "queries": 173
-    },
-    "dense_glove": {
-      "recall@1": 0.4162,
-      "recall@3": 0.6647,
-      "queries": 173
-    },
-    "hybrid_glove": {
-      "recall@1": 0.4913,
-      "recall@3": 0.6474,
-      "queries": 173
-    },
-    "out_of_scope_results": 0,
-    "questions": 60
-  },
-  "4_rules": {
-    "hand_worked_cases": 14,
-    "property_tests": 2,
-    "pytest_summary": "16 passed in 0.78s"
-  },
-  "5_fairness": {
+  "fairness": {
     "variants": {
       "Historical labels, all features": {
-        "auc_true_labels": 0.7643,
-        "flag_rate": 0.1009,
+        "auc_true_labels": 0.7418,
+        "flag_rate": 0.0957,
         "area": {
           "rates": {
             "A": {
-              "fpr": 0.0271,
+              "fpr": 0.0255,
               "ci": [
-                0.0234,
-                0.0308
+                0.0221,
+                0.0294
               ],
-              "tpr": 0.2271,
-              "n": 7875
+              "tpr": 0.2082,
+              "n": 7769
             },
             "B": {
-              "fpr": 0.2047,
+              "fpr": 0.1947,
               "ci": [
-                0.192,
-                0.2166
+                0.1834,
+                0.2073
               ],
-              "tpr": 0.6721,
-              "n": 4125
+              "tpr": 0.6092,
+              "n": 4231
             }
           },
           "disparities": [
             {
               "group": "B",
               "vs": "A",
-              "ratio": 7.563,
+              "ratio": 7.622,
               "ci": [
-                6.581,
-                8.885
+                6.524,
+                8.92
               ],
               "flagged": true
             }
@@ -128,51 +41,51 @@
         "age_band": {
           "rates": {
             "18-25": {
-              "fpr": 0.0792,
+              "fpr": 0.0809,
               "ci": [
-                0.0689,
-                0.0909
+                0.0697,
+                0.0925
               ],
-              "tpr": 0.301,
-              "n": 2237
+              "tpr": 0.3085,
+              "n": 2147
             },
             "26-60": {
-              "fpr": 0.0951,
+              "fpr": 0.0848,
               "ci": [
-                0.0885,
-                0.1025
+                0.0786,
+                0.0913
               ],
-              "tpr": 0.4025,
-              "n": 7583
+              "tpr": 0.3609,
+              "n": 7720
             },
             "61+": {
-              "fpr": 0.0726,
+              "fpr": 0.0902,
               "ci": [
-                0.062,
-                0.0842
+                0.0776,
+                0.1023
               ],
-              "tpr": 0.4059,
-              "n": 2180
+              "tpr": 0.4085,
+              "n": 2133
             }
           },
           "disparities": [
             {
               "group": "18-25",
               "vs": "26-60",
-              "ratio": 0.833,
+              "ratio": 0.954,
               "ci": [
-                0.701,
-                0.971
+                0.81,
+                1.112
               ],
               "flagged": false
             },
             {
               "group": "61+",
               "vs": "26-60",
-              "ratio": 0.764,
+              "ratio": 1.064,
               "ci": [
-                0.639,
-                0.9
+                0.91,
+                1.233
               ],
               "flagged": false
             }
@@ -181,32 +94,32 @@
         "sex": {
           "rates": {
             "F": {
-              "fpr": 0.0876,
+              "fpr": 0.0907,
               "ci": [
-                0.0806,
-                0.0951
+                0.0833,
+                0.0991
               ],
-              "tpr": 0.3916,
-              "n": 6128
+              "tpr": 0.3617,
+              "n": 5999
             },
             "M": {
-              "fpr": 0.0885,
+              "fpr": 0.0794,
               "ci": [
-                0.0814,
-                0.0951
+                0.0728,
+                0.0865
               ],
-              "tpr": 0.3745,
-              "n": 5872
+              "tpr": 0.3534,
+              "n": 6001
             }
           },
           "disparities": [
             {
-              "group": "M",
-              "vs": "F",
-              "ratio": 1.01,
+              "group": "F",
+              "vs": "M",
+              "ratio": 1.143,
               "ci": [
-                0.896,
-                1.128
+                1.007,
+                1.306
               ],
               "flagged": false
             }
@@ -214,37 +127,37 @@
         }
       },
       "Area and postcode removed": {
-        "auc_true_labels": 0.7843,
-        "flag_rate": 0.1023,
+        "auc_true_labels": 0.7567,
+        "flag_rate": 0.0986,
         "area": {
           "rates": {
             "A": {
-              "fpr": 0.074,
+              "fpr": 0.0778,
               "ci": [
-                0.0682,
-                0.0798
+                0.0714,
+                0.0841
               ],
-              "tpr": 0.3569,
-              "n": 7875
+              "tpr": 0.3276,
+              "n": 7769
             },
             "B": {
-              "fpr": 0.1164,
+              "fpr": 0.1057,
               "ci": [
-                0.1068,
-                0.1263
+                0.0969,
+                0.1146
               ],
-              "tpr": 0.4918,
-              "n": 4125
+              "tpr": 0.4368,
+              "n": 4231
             }
           },
           "disparities": [
             {
               "group": "B",
               "vs": "A",
-              "ratio": 1.573,
+              "ratio": 1.358,
               "ci": [
-                1.402,
-                1.762
+                1.205,
+                1.52
               ],
               "flagged": true
             }
@@ -253,176 +166,51 @@
         "age_band": {
           "rates": {
             "18-25": {
-              "fpr": 0.0754,
+              "fpr": 0.0921,
               "ci": [
-                0.0642,
-                0.0862
+                0.0799,
+                0.1047
               ],
-              "tpr": 0.3981,
-              "n": 2237
+              "tpr": 0.3404,
+              "n": 2147
             },
             "26-60": {
-              "fpr": 0.0961,
+              "fpr": 0.0872,
               "ci": [
-                0.0895,
-                0.1031
+                0.0807,
+                0.0934
               ],
-              "tpr": 0.4119,
-              "n": 7583
+              "tpr": 0.3675,
+              "n": 7720
             },
             "61+": {
-              "fpr": 0.076,
+              "fpr": 0.0849,
               "ci": [
-                0.0654,
-                0.0875
+                0.0727,
+                0.098
               ],
-              "tpr": 0.3861,
-              "n": 2180
+              "tpr": 0.4085,
+              "n": 2133
             }
           },
           "disparities": [
             {
               "group": "18-25",
               "vs": "26-60",
-              "ratio": 0.785,
+              "ratio": 1.055,
               "ci": [
-                0.666,
-                0.918
+                0.903,
+                1.214
               ],
               "flagged": false
             },
             {
               "group": "61+",
               "vs": "26-60",
-              "ratio": 0.791,
+              "ratio": 0.973,
               "ci": [
-                0.667,
-                0.936
-              ],
-              "flagged": false
-            }
-          ]
-        },
-        "sex": {
-          "rates": {
-            "F": {
-              "fpr": 0.0858,
-              "ci": [
-                0.0786,
-                0.0928
-              ],
-              "tpr": 0.4106,
-              "n": 6128
-            },
-            "M": {
-              "fpr": 0.0916,
-              "ci": [
-                0.0844,
-                0.0991
-              ],
-              "tpr": 0.3977,
-              "n": 5872
-            }
-          },
-          "disparities": [
-            {
-              "group": "M",
-              "vs": "F",
-              "ratio": 1.068,
-              "ci": [
-                0.964,
-                1.193
-              ],
-              "flagged": false
-            }
-          ]
-        }
-      },
-      "Thresholds equalised on audit sample": {
-        "auc_true_labels": 0.7843,
-        "flag_rate": 0.1063,
-        "area": {
-          "rates": {
-            "A": {
-              "fpr": 0.0922,
-              "ci": [
-                0.0857,
-                0.0991
-              ],
-              "tpr": 0.3923,
-              "n": 7875
-            },
-            "B": {
-              "fpr": 0.0931,
-              "ci": [
-                0.0842,
-                0.102
-              ],
-              "tpr": 0.4426,
-              "n": 4125
-            }
-          },
-          "disparities": [
-            {
-              "group": "B",
-              "vs": "A",
-              "ratio": 1.009,
-              "ci": [
-                0.894,
-                1.143
-              ],
-              "flagged": false
-            }
-          ]
-        },
-        "age_band": {
-          "rates": {
-            "18-25": {
-              "fpr": 0.0783,
-              "ci": [
-                0.0679,
-                0.09
-              ],
-              "tpr": 0.4078,
-              "n": 2237
-            },
-            "26-60": {
-              "fpr": 0.1001,
-              "ci": [
-                0.093,
-                0.107
-              ],
-              "tpr": 0.4119,
-              "n": 7583
-            },
-            "61+": {
-              "fpr": 0.0808,
-              "ci": [
-                0.0693,
-                0.0928
-              ],
-              "tpr": 0.4059,
-              "n": 2180
-            }
-          },
-          "disparities": [
-            {
-              "group": "18-25",
-              "vs": "26-60",
-              "ratio": 0.782,
-              "ci": [
-                0.666,
-                0.922
-              ],
-              "flagged": false
-            },
-            {
-              "group": "61+",
-              "vs": "26-60",
-              "ratio": 0.808,
-              "ci": [
-                0.687,
-                0.946
+                0.823,
+                1.146
               ],
               "flagged": false
             }
@@ -433,68 +221,68 @@
             "F": {
               "fpr": 0.0914,
               "ci": [
-                0.0839,
-                0.0986
+                0.0843,
+                0.0989
               ],
-              "tpr": 0.4297,
-              "n": 6128
+              "tpr": 0.3957,
+              "n": 5999
             },
             "M": {
-              "fpr": 0.0937,
+              "fpr": 0.0839,
               "ci": [
-                0.0862,
-                0.1014
+                0.077,
+                0.091
               ],
-              "tpr": 0.39,
-              "n": 5872
+              "tpr": 0.3405,
+              "n": 6001
             }
           },
           "disparities": [
             {
-              "group": "M",
-              "vs": "F",
-              "ratio": 1.025,
+              "group": "F",
+              "vs": "M",
+              "ratio": 1.09,
               "ci": [
-                0.927,
-                1.149
+                0.97,
+                1.227
               ],
               "flagged": false
             }
           ]
         }
       },
-      "Trained on audit sample (2,000)": {
-        "auc_true_labels": 0.7903,
-        "flag_rate": 0.1022,
+      "Thresholds equalised on audit sample": {
+        "auc_true_labels": 0.7567,
+        "flag_rate": 0.1011,
         "area": {
           "rates": {
             "A": {
-              "fpr": 0.0852,
+              "fpr": 0.0899,
               "ci": [
-                0.0787,
-                0.0918
+                0.0833,
+                0.0963
               ],
-              "tpr": 0.4218,
-              "n": 7875
+              "tpr": 0.3515,
+              "n": 7769
             },
             "B": {
-              "fpr": 0.0921,
+              "fpr": 0.09,
               "ci": [
-                0.0835,
-                0.101
+                0.0818,
+                0.0983
               ],
-              "tpr": 0.4262,
-              "n": 4125
+              "tpr": 0.4195,
+              "n": 4231
             }
           },
           "disparities": [
             {
               "group": "B",
               "vs": "A",
-              "ratio": 1.081,
+              "ratio": 1.001,
               "ci": [
-                0.953,
-                1.216
+                0.886,
+                1.126
               ],
               "flagged": false
             }
@@ -503,51 +291,51 @@
         "age_band": {
           "rates": {
             "18-25": {
-              "fpr": 0.082,
+              "fpr": 0.094,
               "ci": [
-                0.0707,
-                0.0933
+                0.0818,
+                0.1067
               ],
-              "tpr": 0.4272,
-              "n": 2237
+              "tpr": 0.3511,
+              "n": 2147
             },
             "26-60": {
-              "fpr": 0.093,
+              "fpr": 0.0895,
               "ci": [
-                0.0862,
-                0.1003
+                0.0833,
+                0.0959
               ],
-              "tpr": 0.434,
-              "n": 7583
+              "tpr": 0.3775,
+              "n": 7720
             },
             "61+": {
-              "fpr": 0.0741,
+              "fpr": 0.0873,
               "ci": [
-                0.064,
-                0.0851
+                0.0742,
+                0.0994
               ],
-              "tpr": 0.3861,
-              "n": 2180
+              "tpr": 0.4085,
+              "n": 2133
             }
           },
           "disparities": [
             {
               "group": "18-25",
               "vs": "26-60",
-              "ratio": 0.881,
+              "ratio": 1.05,
               "ci": [
-                0.75,
-                1.022
+                0.902,
+                1.214
               ],
               "flagged": false
             },
             {
               "group": "61+",
               "vs": "26-60",
-              "ratio": 0.796,
+              "ratio": 0.975,
               "ci": [
-                0.67,
-                0.934
+                0.825,
+                1.136
               ],
               "flagged": false
             }
@@ -556,32 +344,157 @@
         "sex": {
           "rates": {
             "F": {
-              "fpr": 0.0876,
+              "fpr": 0.0944,
               "ci": [
-                0.0803,
-                0.0951
+                0.0874,
+                0.102
               ],
-              "tpr": 0.4335,
-              "n": 6128
+              "tpr": 0.4128,
+              "n": 5999
             },
             "M": {
-              "fpr": 0.0875,
+              "fpr": 0.0855,
               "ci": [
-                0.0802,
-                0.0948
+                0.0785,
+                0.0931
               ],
-              "tpr": 0.4131,
-              "n": 5872
+              "tpr": 0.3405,
+              "n": 6001
             }
           },
           "disparities": [
             {
-              "group": "M",
-              "vs": "F",
-              "ratio": 0.998,
+              "group": "F",
+              "vs": "M",
+              "ratio": 1.104,
               "ci": [
-                0.883,
-                1.12
+                0.987,
+                1.236
+              ],
+              "flagged": false
+            }
+          ]
+        }
+      },
+      "Trained on audit sample (2,000)": {
+        "auc_true_labels": 0.7663,
+        "flag_rate": 0.098,
+        "area": {
+          "rates": {
+            "A": {
+              "fpr": 0.0943,
+              "ci": [
+                0.0879,
+                0.101
+              ],
+              "tpr": 0.3857,
+              "n": 7769
+            },
+            "B": {
+              "fpr": 0.0727,
+              "ci": [
+                0.0661,
+                0.0811
+              ],
+              "tpr": 0.3621,
+              "n": 4231
+            }
+          },
+          "disparities": [
+            {
+              "group": "B",
+              "vs": "A",
+              "ratio": 0.771,
+              "ci": [
+                0.68,
+                0.879
+              ],
+              "flagged": true
+            }
+          ]
+        },
+        "age_band": {
+          "rates": {
+            "18-25": {
+              "fpr": 0.0906,
+              "ci": [
+                0.0779,
+                0.1033
+              ],
+              "tpr": 0.3511,
+              "n": 2147
+            },
+            "26-60": {
+              "fpr": 0.0853,
+              "ci": [
+                0.0791,
+                0.0919
+              ],
+              "tpr": 0.3675,
+              "n": 7720
+            },
+            "61+": {
+              "fpr": 0.0878,
+              "ci": [
+                0.0752,
+                0.1004
+              ],
+              "tpr": 0.4507,
+              "n": 2133
+            }
+          },
+          "disparities": [
+            {
+              "group": "18-25",
+              "vs": "26-60",
+              "ratio": 1.062,
+              "ci": [
+                0.907,
+                1.249
+              ],
+              "flagged": false
+            },
+            {
+              "group": "61+",
+              "vs": "26-60",
+              "ratio": 1.029,
+              "ci": [
+                0.868,
+                1.199
+              ],
+              "flagged": false
+            }
+          ]
+        },
+        "sex": {
+          "rates": {
+            "F": {
+              "fpr": 0.088,
+              "ci": [
+                0.0812,
+                0.0959
+              ],
+              "tpr": 0.3745,
+              "n": 5999
+            },
+            "M": {
+              "fpr": 0.0855,
+              "ci": [
+                0.0789,
+                0.0926
+              ],
+              "tpr": 0.3793,
+              "n": 6001
+            }
+          },
+          "disparities": [
+            {
+              "group": "F",
+              "vs": "M",
+              "ratio": 1.029,
+              "ci": [
+                0.921,
+                1.153
               ],
               "flagged": false
             }
@@ -590,232 +503,110 @@
       }
     },
     "test_claims": 12000,
-    "true_fraud_rate": 0.0435,
+    "true_fraud_rate": 0.0389,
     "proxy_strength_auc_area": {
       "all features": 1.0,
-      "area and postcode removed": 0.76,
-      "behaviour features only": 0.583
+      "area and postcode removed": 0.758,
+      "behaviour features only": 0.569
     },
     "null_control_unbiased_labels": {
-      "behaviour_only": "0/10 models flagged",
+      "behaviour_only": "1/10 models flagged",
       "with_area_features": "4/10 models flagged"
     },
-    "age_band_replication_behaviour_model": {
+    "age_band_replication": {
       "11": {
-        "18-25": 0.902,
-        "61+": 0.748
+        "18-25": 1.091,
+        "61+": 0.959
       },
       "77": {
-        "18-25": 1.073,
-        "61+": 0.984
+        "18-25": 0.815,
+        "61+": 0.895
       },
       "78": {
-        "18-25": 1.013,
-        "61+": 0.899
+        "18-25": 0.94,
+        "61+": 0.89
       }
     },
     "audit_sample_size": {
       "250": {
-        "fpr_ratio_mean": 1.146,
+        "fpr_ratio_mean": 1.087,
         "fpr_ratio_range": [
-          0.818,
-          1.611
+          0.721,
+          1.517
         ],
-        "auc_mean": 0.752
+        "auc_mean": 0.716
       },
       "500": {
-        "fpr_ratio_mean": 1.241,
+        "fpr_ratio_mean": 1.005,
         "fpr_ratio_range": [
-          0.949,
-          1.709
+          0.869,
+          1.304
         ],
-        "auc_mean": 0.77
+        "auc_mean": 0.736
       },
       "1000": {
-        "fpr_ratio_mean": 1.246,
+        "fpr_ratio_mean": 1.015,
         "fpr_ratio_range": [
-          1.006,
-          1.569
+          0.871,
+          1.301
         ],
-        "auc_mean": 0.783
+        "auc_mean": 0.751
       },
       "2000": {
-        "fpr_ratio_mean": 1.128,
+        "fpr_ratio_mean": 0.941,
         "fpr_ratio_range": [
-          1.088,
-          1.215
+          0.764,
+          1.073
         ],
-        "auc_mean": 0.79
+        "auc_mean": 0.756
       }
     },
     "feedback_sweep": [
       {
         "scrutiny_gap": 0.0,
-        "all_features": 1.123,
-        "area_removed": 1.029,
-        "behaviour_only": 0.968
+        "all_features": 0.937,
+        "area_removed": 1.063,
+        "behaviour_only": 0.987
       },
       {
         "scrutiny_gap": 0.1,
-        "all_features": 1.867,
-        "area_removed": 1.068,
-        "behaviour_only": 0.964
+        "all_features": 2.019,
+        "area_removed": 1.24,
+        "behaviour_only": 1.0
       },
       {
         "scrutiny_gap": 0.2,
-        "all_features": 2.788,
-        "area_removed": 1.178,
-        "behaviour_only": 0.975
+        "all_features": 2.909,
+        "area_removed": 1.326,
+        "behaviour_only": 0.989
       },
       {
         "scrutiny_gap": 0.3,
-        "all_features": 3.952,
-        "area_removed": 1.214,
-        "behaviour_only": 0.965
+        "all_features": 3.912,
+        "area_removed": 1.316,
+        "behaviour_only": 0.997
       },
       {
         "scrutiny_gap": 0.4,
-        "all_features": 5.517,
-        "area_removed": 1.295,
-        "behaviour_only": 0.988
+        "all_features": 5.08,
+        "area_removed": 1.361,
+        "behaviour_only": 0.987
       },
       {
         "scrutiny_gap": 0.5,
-        "all_features": 7.609,
-        "area_removed": 1.393,
-        "behaviour_only": 1.002
+        "all_features": 6.2,
+        "area_removed": 1.416,
+        "behaviour_only": 0.996
       },
       {
         "scrutiny_gap": 0.6,
-        "all_features": 9.869,
-        "area_removed": 1.457,
-        "behaviour_only": 1.026
+        "all_features": 8.196,
+        "area_removed": 1.465,
+        "behaviour_only": 0.999
       }
     ]
   },
-  "6_generated_drafts": {
-    "honest": {
-      "drafts": 240,
-      "accepted": 240,
-      "rejected": 0,
-      "reasons": []
-    },
-    "hallucinate_clause": {
-      "drafts": 240,
-      "accepted": 0,
-      "rejected": 240,
-      "reasons": [
-        "missing_causal_clause",
-        "non_causal_citation",
-        "unknown_clause"
-      ]
-    },
-    "fabricate_quote": {
-      "drafts": 240,
-      "accepted": 0,
-      "rejected": 240,
-      "reasons": [
-        "fabricated_quote"
-      ]
-    },
-    "invent_amount": {
-      "drafts": 240,
-      "accepted": 0,
-      "rejected": 240,
-      "reasons": [
-        "invented_amount"
-      ]
-    },
-    "leak_other_claim": {
-      "drafts": 240,
-      "accepted": 0,
-      "rejected": 240,
-      "reasons": [
-        "other_claim_reference"
-      ]
-    },
-    "drop_causal_clause": {
-      "drafts": 240,
-      "accepted": 0,
-      "rejected": 240,
-      "reasons": [
-        "missing_causal_clause"
-      ]
-    },
-    "malformed_json": {
-      "drafts": 240,
-      "accepted": 0,
-      "rejected": 240,
-      "reasons": [
-        "malformed_output"
-      ]
-    },
-    "refuse": {
-      "drafts": 240,
-      "accepted": 0,
-      "rejected": 240,
-      "reasons": [
-        "no_output"
-      ]
-    },
-    "live_llm": "not run here: set ANTHROPIC_API_KEY and run python -m evaluation.run_llm"
-  },
-  "7_prompt_injection": {
-    "known_patterns": {
-      "claims": 54,
-      "detected": 1.0
-    },
-    "false_alarm_rate_clean_claims": 0.0,
-    "garak_guard_only": {
-      "attacks": 36,
-      "detected": 0.1111
-    },
-    "garak_end_to_end": {
-      "attacks": 88,
-      "missed_by_guard_and_reached_model": 60,
-      "obeyed_then_rejected_by_output_checks": 60,
-      "attacks_that_changed_what_the_adjuster_sees": 0,
-      "model": "worst-case fake that obeys every injection reaching it"
-    }
-  },
-  "8_audit_integrity": {
-    "edit": 1.0,
-    "delete": 1.0,
-    "reorder": 1.0,
-    "insert": 1.0,
-    "rewrite_without_key": 1.0,
-    "insider_rewrite_after_checkpoint": 1.0,
-    "insider_rewrite_no_checkpoint": 0.0,
-    "backdated_entry": 1.0
-  },
-  "9_authority_boundary": {
-    "attempts": 11,
-    "refused": 11,
-    "details": {
-      "no token (AI acting alone)": true,
-      "forged role in token": true,
-      "expired token": true,
-      "investigator deciding": true,
-      "override without reason": true,
-      "escalated claim without supervisor": true,
-      "supervisor signs off own decision": true,
-      "fabricated case file": true,
-      "hand-built decision sent to claimant": true,
-      "second decision on same claim": true,
-      "revoked staff member": true
-    },
-    "legitimate_decisions_accepted": true
-  },
-  "10_access_control": {
-    "claims_with_health_data": 100,
-    "share_where_health_data_shown": {
-      "adjuster": 0.96,
-      "investigator": 0.0,
-      "auditor": 0.0
-    },
-    "case_views_logged": 300
-  },
-  "11_monitoring_simulation": {
+  "automation_bias": {
     "runs": 2000,
     "spearman_override_vs_harm": -0.021,
     "spearman_canary_vs_catch": 0.969,
@@ -826,27 +617,5 @@
       0.131
     ],
     "runs_at_3pct_override": 240
-  },
-  "12_compute": {
-    "assumptions": {
-      "power_per_core_w": 15.0,
-      "pue": 1.2,
-      "grid_kg_per_kwh": 0.38
-    },
-    "cpu_ms_per_claim": 2.92,
-    "g_co2_per_1000_claims": 0.0055,
-    "fraud_model_retrain_cpu_s": 0.16,
-    "g_co2_per_retrain": 0.0003,
-    "excludes": "hosted LLM drafting (no published energy per request)"
-  },
-  "pipeline": {
-    "claims": 2000,
-    "recommendations": {
-      "approve": 1390,
-      "deny": 53,
-      "request_information": 557
-    },
-    "escalated_to_supervisor": 220,
-    "audit_chain_intact": true
   }
 }

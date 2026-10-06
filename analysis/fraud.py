@@ -21,7 +21,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-from copilot.synthetic import Claim
+from analysis.synthetic import Claim
 
 BEHAVIOUR_FEATURES = ["prior_claims", "new_policy", "days_to_report", "police_attended",
                       "estimate_to_value", "log_estimate"]

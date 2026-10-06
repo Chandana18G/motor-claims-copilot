@@ -1,9 +1,9 @@
 """Subgroup fairness audit for the fraud indicator.
 
 The primary metric is the false-positive rate by group: how often honest claimants are flagged.
-Every rate comes with a bootstrap 95% confidence interval, and a disparity is only reported when
-the interval for the ratio between groups excludes parity by a margin (default: outside
-0.8-1.25). The audit also measures how well the model's own features predict each protected
+Every rate comes with a bootstrap 95% confidence interval. A disparity is reported when the ratio
+between groups is practically large (outside 0.8-1.25) and statistically clear (its 95%
+interval excludes 1). The audit also measures how well the model's own features predict each protected
 attribute (proxy strength), because removing the attribute itself does not remove its proxies.
 
 Ground truth (``true_fraud``) is needed for false-positive rates. In operation that means a
@@ -43,8 +43,10 @@ class Disparity:
 
     @property
     def flagged(self) -> bool:
+        """Practically large (outside the band) and statistically clear (interval excludes 1)."""
         lo, hi = self.ci
-        return lo > PARITY_BAND[1] or hi < PARITY_BAND[0]
+        outside_band = self.ratio > PARITY_BAND[1] or self.ratio < PARITY_BAND[0]
+        return outside_band and (lo > 1 or hi < 1)
 
 
 def _fpr(flags: np.ndarray, y: np.ndarray) -> float:
