@@ -271,3 +271,7 @@ results/    metrics.json from the last run
 - Portfolio: [chandana18g.github.io](https://chandana18g.github.io) · [this project on the portfolio](https://chandana18g.github.io/projects/claims-copilot/)
 - LinkedIn: [chandana-gurusiddappa](https://www.linkedin.com/in/chandana-gurusiddappa-785563223/)
 - GitHub: [@Chandana18G](https://github.com/Chandana18G)
+
+## Copyright
+
+© 2026 Chandana Gurusiddappa. All rights reserved. You may view this repository, but you may not copy, reuse, modify or publish any part of it (text, code, figures or documents) without written permission. See [LICENSE](LICENSE).

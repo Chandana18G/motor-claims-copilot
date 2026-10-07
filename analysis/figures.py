@@ -15,8 +15,12 @@ SIZE = (12, 6.75)
 DPI = 160
 
 
+COPYRIGHT = "© 2026 Chandana Gurusiddappa · All rights reserved"
+
+
 def _save(fig, out: Path, name: str) -> None:
     out.mkdir(parents=True, exist_ok=True)
+    fig.text(0.995, 0.99, COPYRIGHT, ha="right", va="top", color=MUTED, fontsize=9.5, alpha=0.9)
     fig.savefig(out / f"{name}.png", dpi=DPI)
     plt.close(fig)
 
